@@ -44,11 +44,12 @@ void sTextureRender::init(const uint32_t sw_width,
     // Create shaders
     {
         uint32_t vertex_shader, fragment_shader;
-        int32_t   compile_success;
+        int32_t   compile_success = 0;
 
         vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 
-        glShaderSource(vertex_shader, 1, (const char* const*) &borring_vertex_shader, nullptr);
+        const GLchar* in_vertex_shader = borring_vertex_shader;
+        glShaderSource(vertex_shader, 1, &in_vertex_shader, nullptr);
         glCompileShader(vertex_shader);
         glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &compile_success);
 
@@ -56,10 +57,11 @@ void sTextureRender::init(const uint32_t sw_width,
 
         fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
 
-        glShaderSource(fragment_shader, 1, (const char* const*) &borring_frag_shader, nullptr);
+        const GLchar* in_frag_shader = borring_frag_shader;
+        glShaderSource(fragment_shader, 1, &in_frag_shader, nullptr);
         glCompileShader(fragment_shader);
         glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &compile_success);
-
+    
         assert_msg(!compile_success, "Failed compile of fragment shader");
 
         gl_shader = glCreateProgram();

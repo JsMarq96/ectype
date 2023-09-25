@@ -1,4 +1,3 @@
-#include "present_texture.h"
 #include <stdio.h>
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h> 
@@ -6,6 +5,8 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+
+#include "main_program.h"
 
 #define WIN_WIDTH	640
 #define WIN_HEIGHT	480
@@ -17,26 +18,6 @@ typedef struct sAppState {
 } sAppState;
 
 sAppState app_state;
-
-
-void initialize() {
-    // TODO: Initialize ray stuff
-
-    sTextureRender render;
-
-    render.init(WIN_WIDTH, WIN_HEIGHT);
-}
-
-void main_loop(const double delta_time) {
-    // TODO: Ray stuff
-
-    ImGui::Begin("Test");
-    ImGui::End();
-}
-
-void clean() {
-    // TODO: clean ray stuff
-}
 
 int main() {
     if (!glfwInit()) {
@@ -76,6 +57,12 @@ int main() {
 
     double prev_frame_time = 0.0;
 
+    sProgram main_program = {};
+
+    glfwGetFramebufferSize(app_state.window, &width, &height);
+
+    main_program.initialize(width, height);
+
     while(!glfwWindowShouldClose(app_state.window) && !app_state.close_window) {
         glfwMakeContextCurrent(app_state.window);
         glfwPollEvents();
@@ -94,7 +81,7 @@ int main() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        main_loop(delta_time);
+        main_program.main_loop(delta_time);
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -104,7 +91,7 @@ int main() {
         app_state.close_window = glfwGetKey(app_state.window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
     }
 
-    clean();
+    main_program.cleanup();
     
     return 0;
 }
