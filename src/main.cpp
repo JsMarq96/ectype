@@ -1,3 +1,4 @@
+#include "present_texture.h"
 #include <stdio.h>
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h> 
@@ -20,6 +21,10 @@ sAppState app_state;
 
 void initialize() {
     // TODO: Initialize ray stuff
+
+    sTextureRender render;
+
+    render.init(WIN_WIDTH, WIN_HEIGHT);
 }
 
 void main_loop(const double delta_time) {
