@@ -4,13 +4,20 @@
 #include <imgui.h>
 #include <unistd.h>
 
+
+/**
+*  Example program:
+*    One thread presentes the texture and ImGui.
+*    The other fills the buffer, sleeps, and sends a upload signal to the rdner thread.
+*/
+
 void* compute_thread_function(void *param) {
     sProgram *program = (sProgram*) param;
 
     sScreenBuffer *main_buffer = &program->main_buffer;
     sTextureRender *renderer = &program->renderer;
 
-    sleep(2u);
+    sleep(2.0);
 
     std::cout << "Starting render in other thread" << std::endl;
 
