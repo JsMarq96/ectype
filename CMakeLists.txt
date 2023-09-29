@@ -20,7 +20,7 @@ file(GLOB IMGUI_SRC "libraries/imgui/*.cpp")
 
 add_executable(ectype ${IMGUI_IMPL_SRC} ${IMGUI_SRC} ${C_SOURCES} ${CPP_SOURCES} ${H_SOURCES} ${SUBFOLDER_H_SOURCES} ${SUBFOLDER_C_SOURCES} ${SUBFOLDER_CPP_SOURCES})
 
-
+target_compile_options(ectype PRIVATE -pthread)
 set_target_properties(ectype PROPERTIES OUTPUT_NAME "ectype")
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)

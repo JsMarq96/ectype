@@ -89,6 +89,9 @@ void sTextureRender::render() {
     glBindTexture(GL_TEXTURE_2D, gl_textures[swapchain_index]);
     glUniform1i(glGetUniformLocation(gl_shader, "u_texture"), 0u);
 
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, gl_textures[(swapchain_index + 1u) % 2u]);
+
     glDrawArrays(GL_TRIANGLES, 0, primitive_count);
 
     glBindVertexArray(0);
@@ -121,9 +124,9 @@ void sTextureRender::delete_textures() {
 void sTextureRender::create_textures(const uint32_t swapchain_width, 
                                      const uint32_t swapchain_height) {
 
-    glGenTextures(SWAPCHAIN_COUNT, gl_textures);
+    for(uint8_t i = 0; i <= SWAPCHAIN_COUNT; i++) {
+        glGenTextures(1, &gl_textures[i]);
 
-    for(uint8_t i = 0; i < SWAPCHAIN_COUNT; i++) {
         glBindTexture(GL_TEXTURE_2D, 
                     gl_textures[i]);
 
