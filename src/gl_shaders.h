@@ -9,7 +9,7 @@
                                           "layout(location = 1) in vec2 a_v_uv;\n"
                                           "out vec2 v_uv;\n"
                                           "void main() {\n"
-                                          "	gl_Position = vec4(a_v_pos, 0.0);\n"
+                                          "	gl_Position = vec4(a_v_pos, 1.0);\n"
                                           "	v_uv = a_v_uv;\n"
                                           "}\n";
 

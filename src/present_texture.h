@@ -14,7 +14,7 @@ struct sTextureRender {
     // Quad mesh & rendering
     uint32_t  VAO = 0u;
     uint32_t  VBO = 0u;
-    uint32_t  vertex_count = 0u;
+    uint32_t  primitive_count = 0u;
     uint32_t  gl_shader = 0u;
 
     void init(const uint32_t sw_width, 

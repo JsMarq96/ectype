@@ -6,12 +6,13 @@
 #include "gl_shaders.h"
 #include "utils.h"
 
-const static float quad_vertices[25] = {
+const static float quad_vertices[30] = {
      1.0f,  1.0f, 0.0f,   1.0f, 1.0f,   // top right
      1.0f, -1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
     -1.0f, -1.0f, 0.0f,   0.0f, 0.0f,   // bottom left
+     -1.0f, -1.0f, 0.0f,   0.0f, 0.0f,   // bottom left
     -1.0f,  1.0f, 0.0f,   0.0f, 1.0f,    // top left
-     1.0f, -1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+     1.0f,  1.0f, 0.0f,   1.0f, 1.0f,   // top right
 };
 
 void sTextureRender::init(const uint32_t sw_width, 
@@ -20,6 +21,8 @@ void sTextureRender::init(const uint32_t sw_width,
     swapchain_width = sw_width;
 
     create_textures(sw_width, sw_height);
+
+    primitive_count = 6u;
 
     // Create mesh
     {
@@ -34,7 +37,7 @@ void sTextureRender::init(const uint32_t sw_width,
         glEnableVertexAttribArray(1u);
         glVertexAttribPointer(1u, 2u, GL_FLOAT, GL_FALSE, sizeof(float) * 5u, (void*) (sizeof(float) * 3u));
 
-        glBufferData(GL_ARRAY_BUFFER, 25u * sizeof(float), quad_vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 30 * sizeof(float), quad_vertices, GL_STATIC_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -86,7 +89,7 @@ void sTextureRender::render() {
     glBindTexture(GL_TEXTURE_2D, gl_textures[swapchain_index]);
     glUniform1i(glGetUniformLocation(gl_shader, "u_texture"), 0u);
 
-    glDrawArrays(GL_TRIANGLES, 0, vertex_count);
+    glDrawArrays(GL_TRIANGLES, 0, primitive_count);
 
     glBindVertexArray(0);
 }
@@ -141,7 +144,7 @@ void sTextureRender::create_textures(const uint32_t swapchain_width,
                         GL_LINEAR);
 
         glTexStorage2D(GL_TEXTURE_2D,
-                        0,
+                        1,
                         GL_RGB32F,
                         swapchain_width,
                         swapchain_height);
