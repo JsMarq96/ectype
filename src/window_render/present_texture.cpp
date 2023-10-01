@@ -4,7 +4,7 @@
 #include <GL/glcorearb.h>
 
 #include "gl_shaders.h"
-#include "utils.h"
+#include "../utils.h"
 
 const static float quad_vertices[30] = {
      1.0f,  1.0f, 0.0f,   1.0f, 1.0f,   // top right

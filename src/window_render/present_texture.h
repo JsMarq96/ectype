@@ -4,6 +4,13 @@
 
 #define SWAPCHAIN_COUNT 2
 
+/**
+* Renders a texture swapchain in a fullscreen quad:
+* Presenting one swapchain while the other is beign updated.
+* NOTE: it does not have any support for a concurent upload
+*       of the secondary texture, it might not be needed.
+*/
+
 struct sTextureRender {
     uint32_t gl_textures[SWAPCHAIN_COUNT] = {};
     uint8_t  swapchain_index = 0u;
