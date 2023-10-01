@@ -6,12 +6,18 @@
 #include "screen_buffer.h"
 #include "window_render/present_texture.h"
 
+enum eFrameState : uint8_t {
+    NEEDS_NEW_FRAME = 0,
+    FRAME_IN_PROGRESS,
+    FRAME_FINISHED
+};
+
 struct sProgram {
     pthread_t       compute_thread = 0;
 
     bool            needs_upload = false;
-    bool            is_frame_finished = false;
-    bool            is_new_frame_needed = true;
+
+    eFrameState     current_frame_state = NEEDS_NEW_FRAME;
 
     sScreenBuffer   main_buffer = {};
     sTextureRender  renderer = {};

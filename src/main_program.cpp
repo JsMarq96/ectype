@@ -26,13 +26,14 @@ void* compute_thread_function(void *param) {
     uint32_t count = 0u;
     glm::vec3 new_color;
     while(true) {
-        if (!program->is_new_frame_needed) {
+        if (program->current_frame_state != NEEDS_NEW_FRAME) {
             continue;
         }
 
         count = main_buffer->total_size;
         new_color = program->new_color;
         std::cout << "Starting new frame" << std::endl;
+        program->current_frame_state = FRAME_IN_PROGRESS;
         while(count > 0u) {
             // COmpute
 
@@ -44,8 +45,7 @@ void* compute_thread_function(void *param) {
             }
         }
 
-        program->is_frame_finished = true;
-        program->is_new_frame_needed = false;
+        program->current_frame_state = FRAME_FINISHED;
         program->needs_upload = true;
         std::cout << "Finished new frame" << std::endl;
     }
@@ -89,15 +89,12 @@ void sProgram::main_loop(const double delta) {
 
     // Manages the GUI change event
     if (has_changed_GUI) {
-        is_new_frame_needed = true;
-        is_frame_finished = false;
-
-        if (is_frame_finished) {
+        if (current_frame_state == FRAME_FINISHED) {
             // If it is not in the middle of creating a new frame,
             // restart the process via the flags
             // Clean the buffer of a half-done frame
             main_buffer.tint_color(background_color);
-        } else {
+        } else { // if there is a frame in progress
             // If its in the middle of a new frame,
             // kill the current thread, and launch a new one
             pthread_cancel(compute_thread);
@@ -109,6 +106,7 @@ void sProgram::main_loop(const double delta) {
             pthread_create(&compute_thread, nullptr, compute_thread_function, (void*)this);
         }
         has_changed_GUI = false;
+        current_frame_state = NEEDS_NEW_FRAME;
     }
 
     renderer.render();
