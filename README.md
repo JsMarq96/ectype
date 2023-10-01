@@ -5,7 +5,7 @@ The important part (where the raytracing code will be added is in src/main_progr
 
 # Dependencies
 - CMake
-- gl3w (fetched by CMake)
+- gl3w (fetched by CMake, needs internet connection for building!)
 - glfw (fetched by CMake)
 - glm (fetched by CMake)
 - Dear ImGui (fetched by CMake)
