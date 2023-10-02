@@ -7,13 +7,13 @@
 #include "window_render/present_texture.h"
 
 enum eFrameState : uint8_t {
-    NEEDS_NEW_FRAME = 0,
+    NEEDS_NEW_FRAME = 0u,
     FRAME_IN_PROGRESS,
     FRAME_FINISHED
 };
 
 struct sProgram {
-    pthread_t       compute_thread = 0;
+    pthread_t       compute_thread = 0u;
 
     bool            needs_upload = false;
 
