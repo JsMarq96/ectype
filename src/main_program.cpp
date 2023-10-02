@@ -117,4 +117,8 @@ void sProgram::cleanup() {
     // Clean ray stuff
     main_buffer.clean();
     renderer.delete_textures();
+
+    // Stop compute thread
+    pthread_cancel(compute_thread);
+    pthread_join(compute_thread, nullptr);
 }
