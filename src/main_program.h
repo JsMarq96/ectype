@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <pthread.h>
 
+#include "threading.h"
 #include "screen_buffer.h"
 #include "window_render/present_texture.h"
 
@@ -13,7 +14,7 @@ enum eFrameState : uint8_t {
 };
 
 struct sProgram {
-    pthread_t       compute_thread = 0u;
+    sThread         compute_thread = {};
 
     bool            needs_upload = false;
 

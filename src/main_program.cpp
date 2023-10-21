@@ -2,9 +2,7 @@
 
 #include <iostream>
 #include <imgui.h>
-#include <pthread.h>
 #include <unistd.h>
-
 
 /**
 *  Example program:
@@ -68,7 +66,7 @@ void sProgram::initialize(const uint32_t w, const uint32_t h) {
     renderer.upload_to_backbuffer((void*) main_buffer.buffer);
     renderer.change();
 
-    pthread_create(&compute_thread, nullptr, compute_thread_function, (void*)this);
+    compute_thread.create_thread(compute_thread_function, (void*)this);
 }
 
 // Main render loop and GUI function
@@ -97,13 +95,12 @@ void sProgram::main_loop(const double delta) {
         } else { // if there is a frame in progress
             // If its in the middle of a new frame,
             // kill the current thread, and launch a new one
-            pthread_cancel(compute_thread);
-            pthread_join(compute_thread, nullptr);
+            compute_thread.cancel_thread();
 
             main_buffer.tint_color(background_color);
 
             // Re-launch the thread
-            pthread_create(&compute_thread, nullptr, compute_thread_function, (void*)this);
+            compute_thread.create_thread(compute_thread_function, (void*)this);
         }
         has_changed_GUI = false;
         current_frame_state = NEEDS_NEW_FRAME;
@@ -115,8 +112,7 @@ void sProgram::main_loop(const double delta) {
 
 void sProgram::cleanup() {
     // Stop compute thread
-    pthread_cancel(compute_thread);
-    pthread_join(compute_thread, nullptr);
+    compute_thread.cancel_thread();
     
     // Clean ray stuff
     main_buffer.clean();
