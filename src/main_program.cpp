@@ -4,11 +4,47 @@
 #include <imgui.h>
 #include <unistd.h>
 
+#include "intersections.h"
+
 /**
 *  Example program:
 *    One thread presentes the texture and ImGui.
 *    The other fills the buffer, sleeps, and sends a upload signal to the render thread.
 */
+
+// MAIN SHADER
+
+void sProgram::init_shader(const uint32_t w, const uint32_t h) {
+    const float aspect_ratio = w / (float) h;
+    camera.init({0.0f, 0.0f, 0.0f}, {w, h}, 2.0f * {1.0f, aspect_ratio});
+}
+
+void sProgram::main_shader(const double delta_time) {
+    std::cout << "Starting new frame" << std::endl;
+    current_frame_state = FRAME_IN_PROGRESS;
+    for(uint32_t y = 0u; y < camera.view_port_resolution.y; y++) {
+        for(uint32_t x = 0u; x < camera.view_port_resolution.x; x++) {
+        
+        }
+    }
+    while(count > 0u) {
+            // COmpute
+
+            main_buffer.buffer[count--] = new_color;
+
+            if (count % 100u) {
+                needs_upload = true;
+                sleep(0u); // Slight dealy for visualization 
+            }
+        }
+
+    current_frame_state = FRAME_FINISHED;
+    needs_upload = true;
+    std::cout << "Finished new frame" << std::endl;
+}
+
+
+// PRESENTATION
 
 // Secondary function thread
 void* compute_thread_function(void *param) {
@@ -20,6 +56,7 @@ void* compute_thread_function(void *param) {
     sleep(1u);
 
     std::cout << "Starting render in other thread" << std::endl;
+    program->init_shader();
 
     uint32_t count = 0u;
     glm::vec3 new_color;
@@ -28,24 +65,7 @@ void* compute_thread_function(void *param) {
             continue;
         }
 
-        count = main_buffer->total_size;
-        new_color = program->new_color;
-        std::cout << "Starting new frame" << std::endl;
-        program->current_frame_state = FRAME_IN_PROGRESS;
-        while(count > 0u) {
-            // COmpute
-
-            main_buffer->buffer[count--] = new_color;
-
-            if (count % 100u) {
-                program->needs_upload = true;
-                sleep(0u); // Slight dealy for visualization 
-            }
-        }
-
-        program->current_frame_state = FRAME_FINISHED;
-        program->needs_upload = true;
-        std::cout << "Finished new frame" << std::endl;
+        program->main_shader(0.0);
     }
 
     std::cout << "Finished thread" << std::endl;

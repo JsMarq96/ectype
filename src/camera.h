@@ -28,8 +28,8 @@ struct sCamera {
         const glm::vec3 vp_world_size_axis_x = glm::vec3(view_port_size.x, 0.0f, 0.0f);
         const glm::vec3 vp_world_size_axis_y = glm::vec3(0.0f, -view_port_size.y, 0.0f); // Why the minus??
 
-        pixel_delta_u = vp_world_size_axis_x / view_port_resolution.x;
-        pixel_delta_v = vp_world_size_axis_y / view_port_resolution.y; 
+        pixel_delta_u = vp_world_size_axis_x / (float) view_port_resolution.x;
+        pixel_delta_v = vp_world_size_axis_y / (float) view_port_resolution.y; 
 
         const glm::vec3 vp_upper_left_corner = camera_center - glm::vec3(0.0f, 0.0f, focal_length) - 0.5f * vp_world_size_axis_x - 0.5f * vp_world_size_axis_y;
 
@@ -38,6 +38,6 @@ struct sCamera {
 
     inline glm::vec3 get_ray_dir(const uint32_t pixel_u, const uint32_t pixel_v) {
         // Pixel center coordinate - camera center = ray_dir
-        return (pixel_00_position + (pixel_u * pixel_delta_u) + (pixel_v * pixel_delta_v)) - camera_center; 
+        return (pixel_00_position + ((float) pixel_u * pixel_delta_u) + ((float) pixel_v * pixel_delta_v)) - camera_center; 
     }
 };
