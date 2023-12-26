@@ -12,11 +12,11 @@
 *    The other fills the buffer, sleeps, and sends a upload signal to the render thread.
 */
 
-// MAIN SHADER
+// MAIN SHADER ====================================================
 
 void sProgram::init_shader(const uint32_t w, const uint32_t h) {
     const float aspect_ratio = w / (float) h;
-    camera.init({0.0f, 0.0f, 0.0f}, {w, h}, 2.0f * {1.0f, aspect_ratio});
+    camera.init({0.0f, 0.0f, 0.0f}, {w, h}, glm::vec2{1.0f, aspect_ratio} * 2.0f);
 }
 
 void sProgram::main_shader(const double delta_time) {
@@ -27,16 +27,6 @@ void sProgram::main_shader(const double delta_time) {
         
         }
     }
-    while(count > 0u) {
-            // COmpute
-
-            main_buffer.buffer[count--] = new_color;
-
-            if (count % 100u) {
-                needs_upload = true;
-                //sleep(0u); // Slight dealy for visualization 
-            }
-        }
 
     current_frame_state = FRAME_FINISHED;
     needs_upload = true;
@@ -44,7 +34,7 @@ void sProgram::main_shader(const double delta_time) {
 }
 
 
-// PRESENTATION
+// PRESENTATION =================================
 
 // Secondary function thread
 THREADED_FUNC(compute_thread_function) {
@@ -56,7 +46,7 @@ THREADED_FUNC(compute_thread_function) {
     //sleep(1u);
 
     std::cout << "Starting render in other thread" << std::endl;
-    program->init_shader();
+    program->init_shader(main_buffer->width, main_buffer->height);
 
     uint32_t count = 0u;
     glm::vec3 new_color;
@@ -65,20 +55,7 @@ THREADED_FUNC(compute_thread_function) {
             continue;
         }
 
-        count = main_buffer->total_size;
-        new_color = program->new_color;
-        std::cout << "Starting new frame" << std::endl;
-        program->current_frame_state = FRAME_IN_PROGRESS;
-        while(count > 0u) {
-            // COmpute
-
-            main_buffer->buffer[count--] = new_color;
-
-            if (count % 100u) {
-                program->needs_upload = true;
-                //sleep(0u); // Slight dealy for visualization 
-            }
-        }
+        program->main_shader(0.0);
 
         program->current_frame_state = FRAME_FINISHED;
         program->needs_upload = true;
