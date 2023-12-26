@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <imgui.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 /**
 *  Example program:
@@ -11,13 +11,13 @@
 */
 
 // Secondary function thread
-void* compute_thread_function(void *param) {
+THREADED_FUNC(compute_thread_function) {
     sProgram *program = (sProgram*) param;
 
     sScreenBuffer *main_buffer = &program->main_buffer;
     sTextureRender *renderer = &program->renderer;
 
-    sleep(1u);
+    //sleep(1u);
 
     std::cout << "Starting render in other thread" << std::endl;
 
@@ -39,7 +39,7 @@ void* compute_thread_function(void *param) {
 
             if (count % 100u) {
                 program->needs_upload = true;
-                sleep(0u); // Slight dealy for visualization 
+                //sleep(0u); // Slight dealy for visualization 
             }
         }
 
@@ -50,7 +50,7 @@ void* compute_thread_function(void *param) {
 
     std::cout << "Finished thread" << std::endl;
 
-    return nullptr;
+    return THREAD_RETURN;
 }
 
 // Ray startup program
