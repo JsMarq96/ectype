@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <imgui.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 #include "intersections.h"
 
@@ -34,7 +34,7 @@ void sProgram::main_shader(const double delta_time) {
 
             if (count % 100u) {
                 needs_upload = true;
-                sleep(0u); // Slight dealy for visualization 
+                //sleep(0u); // Slight dealy for visualization 
             }
         }
 
@@ -47,13 +47,13 @@ void sProgram::main_shader(const double delta_time) {
 // PRESENTATION
 
 // Secondary function thread
-void* compute_thread_function(void *param) {
+THREADED_FUNC(compute_thread_function) {
     sProgram *program = (sProgram*) param;
 
     sScreenBuffer *main_buffer = &program->main_buffer;
     sTextureRender *renderer = &program->renderer;
 
-    sleep(1u);
+    //sleep(1u);
 
     std::cout << "Starting render in other thread" << std::endl;
     program->init_shader();
@@ -65,12 +65,29 @@ void* compute_thread_function(void *param) {
             continue;
         }
 
-        program->main_shader(0.0);
+        count = main_buffer->total_size;
+        new_color = program->new_color;
+        std::cout << "Starting new frame" << std::endl;
+        program->current_frame_state = FRAME_IN_PROGRESS;
+        while(count > 0u) {
+            // COmpute
+
+            main_buffer->buffer[count--] = new_color;
+
+            if (count % 100u) {
+                program->needs_upload = true;
+                //sleep(0u); // Slight dealy for visualization 
+            }
+        }
+
+        program->current_frame_state = FRAME_FINISHED;
+        program->needs_upload = true;
+        std::cout << "Finished new frame" << std::endl;
     }
 
     std::cout << "Finished thread" << std::endl;
 
-    return nullptr;
+    return THREAD_RETURN;
 }
 
 // Ray startup program

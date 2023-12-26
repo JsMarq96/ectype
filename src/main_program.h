@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <pthread.h>
 
 #include "threading.h"
 #include "screen_buffer.h"
