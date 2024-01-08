@@ -17,6 +17,9 @@
 void sProgram::init_shader(const uint32_t w, const uint32_t h) {
     const float aspect_ratio = w / (float) h;
     camera.init({0.0f, 0.0f, 0.0f}, {w, h}, glm::vec2{1.0f, aspect_ratio} * 2.0f);
+
+    // Scene config
+    scene.add_sphere({0.0f, 0.0f, 0.0f}, 0.5f, {glm::vec3(1.0f, 0.0f, 0.0f)});
 }
 
 void sProgram::main_shader(const double delta_time) {
@@ -24,7 +27,9 @@ void sProgram::main_shader(const double delta_time) {
     current_frame_state = FRAME_IN_PROGRESS;
     for(uint32_t y = 0u; y < camera.view_port_resolution.y; y++) {
         for(uint32_t x = 0u; x < camera.view_port_resolution.x; x++) {
-        
+            glm::vec3 ray_dir = camera.get_ray_dir(x, y);
+
+            main_buffer.set(x, y, glm::vec3(0.5f * (ray_dir.y + 1.0)));
         }
     }
 

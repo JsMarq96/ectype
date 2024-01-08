@@ -6,6 +6,7 @@
 #include "screen_buffer.h"
 #include "window_render/present_texture.h"
 #include "camera.h"
+#include "scene.h"
 
 enum eFrameState : uint8_t {
     NEEDS_NEW_FRAME = 0u,
@@ -26,6 +27,8 @@ struct sProgram {
 
     // Shader stuff
     sCamera         camera = {};
+
+    sScene          scene = {};
 
     glm::vec3       new_color = {1.0f, 0.0f, 0.0f};
     glm::vec3       background_color = {0.0f, 1.0f, 0.0f};
